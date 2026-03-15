@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+yt-dlp
+youtube-search-python
+aiofiles
+pydantic
+sqlalchemy[asyncio]
+asyncpg
+python-dotenv
