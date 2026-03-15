@@ -7,7 +7,9 @@ import asyncio
 import os
 from pathlib import Path
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Path as PathParam, Query
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -42,6 +44,36 @@ async def stream(video_id: str = PathParam(..., description="YouTube video ID"))
         raise HTTPException(status_code=500, detail="Failed to get stream.")
 
     return info
+
+
+@router.get("/stream/proxy/{video_id}")
+async def proxy_stream(video_id: str = PathParam(..., description="YouTube video ID")):
+    """
+    Proxy an audio stream from YouTube directly to the client.
+    Used for downloading songs to the phone's local storage.
+    """
+    try:
+        info = await get_stream_info(video_id)
+        audio_url = info.get("url")
+        if not audio_url:
+            raise HTTPException(status_code=404, detail="Audio URL not found.")
+
+        async def stream_audio():
+            async with httpx.AsyncClient() as client:
+                async with client.stream("GET", audio_url) as response:
+                    async for chunk in response.aiter_bytes():
+                        yield chunk
+
+        return StreamingResponse(
+            stream_audio(),
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": f'attachment; filename="{video_id}.mp3"'
+            }
+        )
+    except Exception as exc:
+        logger.error("Proxy stream error for %s: %s", video_id, exc)
+        raise HTTPException(status_code=500, detail="Failed to proxy stream.")
 
 
 @router.post("/download/{video_id}")

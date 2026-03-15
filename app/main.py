@@ -57,6 +57,8 @@ app.add_middleware(
 )
 
 # ── Static Files ────────────────────────────────────────────────────────────
+# Ensure songs directory exists before mounting to avoid Starlette RuntimeError
+SONGS_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/local", StaticFiles(directory=str(SONGS_DIR)), name="local_songs")
 
 # ── Routers ─────────────────────────────────────────────────────────────────
