@@ -61,7 +61,7 @@ async def search_videos(query: str) -> list[dict[str, Any]]:
     logger.info("Found %d results for: %s", len(results), query)
     
     # 3. Cache the results for 1 hour (3600 seconds)
-    await set_cache(cache_key, json.dumps(results), expire=3600)
+    await set_cache(cache_key, json.dumps(results), expire=3000)
     
     return results
 

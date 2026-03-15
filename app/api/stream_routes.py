@@ -195,7 +195,7 @@ async def _precache_stream_url(video_id: str) -> None:
         loop = asyncio.get_event_loop()
         audio_url = await loop.run_in_executor(None, extract_audio_url, video_id)
         if audio_url:
-            await set_cache(redis_key, audio_url, expire=3600)
+            await set_cache(redis_key, audio_url, expire=3000)
             logger.info("Pre-cached stream URL for %s", video_id)
     except Exception as e:
         logger.warning("Failed to pre-cache %s: %s", video_id, e)

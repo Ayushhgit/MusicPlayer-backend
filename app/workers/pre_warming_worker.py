@@ -81,7 +81,7 @@ async def prewarm(video_ids: list[str]) -> None:
             
         if url:
             # cache for 1 hour
-            await set_cache(f"stream:{video_id}", url, expire=3600)
+            await set_cache(f"stream:{video_id}", url, expire=3000)
             success_count += 1
 
     logger.info("Pre-warming complete. Successfully cached %d/%d stream URLs", success_count, len(video_ids))

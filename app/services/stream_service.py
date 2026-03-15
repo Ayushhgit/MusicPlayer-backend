@@ -79,7 +79,7 @@ async def get_stream_info(video_id: str) -> dict[str, Any]:
             raise ValueError(f"No suitable audio stream found for video {video_id}")
             
         # Save to Redis for next time
-        await set_cache(redis_key, audio_url, expire=3600)
+        await set_cache(redis_key, audio_url, expire=3000)
         
         logger.info("Stream URL extracted and cached for %s", video_id)
         return {"source": "youtube", "url": audio_url, "title": "Unknown"}
