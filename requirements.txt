@@ -9,5 +9,7 @@ asyncpg
 python-dotenv
 httpx
 redis
+gtts
 google
 google-genai
+gTTS
